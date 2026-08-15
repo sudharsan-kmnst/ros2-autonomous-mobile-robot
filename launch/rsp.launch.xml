@@ -1,0 +1,26 @@
+<!--
+  rsp.launch.xml
+  Runs robot_state_publisher (RSP): reads robot.urdf.xacro, computes forward
+  kinematics from /joint_states, and broadcasts the TF tree.
+
+  Two substitutions do the work:
+    $(find-pkg-share my_bot)  -> absolute path to the installed package share dir
+    $(command 'xacro <file>') -> runs xacro at launch and captures the URDF on stdout
+                                 into the robot_description parameter.
+
+  use_sim_time: false for Day 1 (no simulator clock). From Day 2 pass
+    ros2 launch my_bot rsp.launch.xml use_sim_time:=true
+  so every node shares Gazebo's /clock.
+-->
+<launch>
+
+  <arg name="use_sim_time" default="false"/>
+
+  <node pkg="robot_state_publisher" exec="robot_state_publisher"
+        name="robot_state_publisher" output="screen">
+    <param name="robot_description"
+           value="$(command 'xacro $(find-pkg-share my_bot)/urdf/robot.urdf.xacro')"/>
+    <param name="use_sim_time" value="$(var use_sim_time)"/>
+  </node>
+
+</launch>

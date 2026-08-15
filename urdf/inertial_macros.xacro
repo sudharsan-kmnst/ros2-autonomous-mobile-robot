@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+  inertial_macros.xacro
+  Reusable inertia tensors so every link has a physically correct <inertial>.
+  WHY it matters: Gazebo integrates rigid-body dynamics from these tensors.
+  Wrong/zero inertia => the robot jitters, sinks, or flips. For SLAM/Nav2 that
+  shows up as odometry drift and a smeared map. These formulas are the standard
+  solid-body inertia tensors about the center of mass.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Solid box - x=length(l), y=width(w), z=height(h) -->
+  <xacro:macro name="inertial_box" params="mass l w h *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${(1.0/12.0) * mass * (w*w + h*h)}" ixy="0.0" ixz="0.0"
+        iyy="${(1.0/12.0) * mass * (l*l + h*h)}" iyz="0.0"
+        izz="${(1.0/12.0) * mass * (l*l + w*w)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Solid cylinder about its own axis (z is the cylinder axis) -->
+  <xacro:macro name="inertial_cylinder" params="mass length radius *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${(1.0/12.0) * mass * (3*radius*radius + length*length)}" ixy="0.0" ixz="0.0"
+        iyy="${(1.0/12.0) * mass * (3*radius*radius + length*length)}" iyz="0.0"
+        izz="${(1.0/2.0) * mass * (radius*radius)}"/>
+    </inertial>
+  </xacro:macro>
+
+  <!-- Solid sphere -->
+  <xacro:macro name="inertial_sphere" params="mass radius *origin">
+    <inertial>
+      <xacro:insert_block name="origin"/>
+      <mass value="${mass}"/>
+      <inertia
+        ixx="${(2.0/5.0) * mass * (radius*radius)}" ixy="0.0" ixz="0.0"
+        iyy="${(2.0/5.0) * mass * (radius*radius)}" iyz="0.0"
+        izz="${(2.0/5.0) * mass * (radius*radius)}"/>
+    </inertial>
+  </xacro:macro>
+
+</robot>

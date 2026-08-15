@@ -1,0 +1,10 @@
+<launch>
+  <arg name="map"    default="$(find-pkg-share my_bot)/maps/my_world.yaml"/>
+  <arg name="params" default="$(find-pkg-share my_bot)/config/nav2_params.yaml"/>
+
+  <include file="$(find-pkg-share nav2_bringup)/launch/bringup_launch.py">
+    <arg name="map"          value="$(var map)"/>
+    <arg name="params_file"  value="$(var params)"/>
+    <arg name="use_sim_time" value="true"/>
+  </include>
+</launch>

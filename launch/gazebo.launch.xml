@@ -1,0 +1,38 @@
+<!--
+  gazebo.launch.xml  -  Day 2 bringup. Starts everything for a driveable robot in sim.
+
+  Pipeline:
+    1. robot_state_publisher (use_sim_time=true) - publishes robot_description + TF tree
+    2. gz sim              - starts Gazebo Harmonic with the obstacles world
+    3. create              - spawns the robot into gz by reading /robot_description
+    4. parameter_bridge    - connects the ROS and Gazebo topics per gz_bridge.yaml
+
+  Run:  ros2 launch my_bot gazebo.launch.xml
+  Then drive:  ros2 run teleop_twist_keyboard teleop_twist_keyboard
+-->
+<launch>
+
+  <arg name="world" default="$(find-pkg-share my_bot)/worlds/obstacles.sdf"/>
+
+  <!-- 1. robot_state_publisher, on SIM time -->
+  <include file="$(find-pkg-share my_bot)/launch/rsp.launch.xml">
+    <arg name="use_sim_time" value="true"/>
+  </include>
+
+  <!-- 2. start Gazebo Harmonic. World path FIRST so the server loads it directly
+          (flags-first can push gz into the slow GUI-sets-world path, which races the
+          spawn). -r = run immediately. -->
+  <include file="$(find-pkg-share ros_gz_sim)/launch/gz_sim.launch.py">
+    <arg name="gz_args" value="$(var world) -r"/>
+  </include>
+
+<!-- 3. spawn the robot AFTER a delay (heavy world needs time to load first) -->
+  <include file="$(find-pkg-share my_bot)/launch/spawn.launch.py"/>
+
+  <!-- 4. ROS <-> Gazebo bridge -->
+  <node pkg="ros_gz_bridge" exec="parameter_bridge" name="ros_gz_bridge" output="screen">
+    <param name="config_file" value="$(find-pkg-share my_bot)/config/gz_bridge.yaml"/>
+    <param name="use_sim_time" value="true"/>
+  </node>
+
+</launch>

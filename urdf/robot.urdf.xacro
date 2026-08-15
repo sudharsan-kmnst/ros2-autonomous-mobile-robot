@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+  robot.urdf.xacro  (top-level)
+  This is the file the launch file processes with `xacro`. It just includes the parts.
+  Keeping bodies / sensors / plugins in separate files is standard practice and makes
+  each piece easy to explain in an interview.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="my_bot">
+
+  <xacro:include filename="robot_core.xacro"/>
+  <xacro:include filename="lidar.xacro"/>
+  <xacro:include filename="gazebo_control.xacro"/>
+
+</robot>

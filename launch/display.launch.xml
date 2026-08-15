@@ -1,0 +1,27 @@
+<!--
+  display.launch.xml
+  One-shot Day 1 view - brings up the whole visualization stack:
+    1. robot_state_publisher  (reused from rsp.launch.xml, so we do not repeat it)
+    2. joint_state_publisher_gui  (sliders to pose the wheels)
+    3. rviz2  loaded with config/view_bot.rviz (Fixed Frame + RobotModel + TF preset)
+
+  Run:  ros2 launch my_bot display.launch.xml
+-->
+<launch>
+
+  <arg name="use_sim_time" default="false"/>
+
+  <!-- 1. robot_state_publisher (include the file we already have) -->
+  <include file="$(find-pkg-share my_bot)/launch/rsp.launch.xml">
+    <arg name="use_sim_time" value="$(var use_sim_time)"/>
+  </include>
+
+  <!-- 2. joint sliders -->
+  <node pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui"
+        name="joint_state_publisher_gui" output="screen"/>
+
+  <!-- 3. rviz2 with the saved config -->
+  <node pkg="rviz2" exec="rviz2" name="rviz2" output="screen"
+        args="-d $(find-pkg-share my_bot)/config/view_bot.rviz"/>
+
+</launch>

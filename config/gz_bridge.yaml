@@ -1,0 +1,51 @@
+# gz_bridge.yaml  -  ros_gz_bridge topic map (Gazebo Harmonic <-> ROS 2 Jazzy)
+#
+# Each entry connects one topic. direction:
+#   GZ_TO_ROS  data flows sim -> ROS   (sensors, odom, clock)
+#   ROS_TO_GZ  data flows ROS -> sim   (commands)
+#
+# Run by parameter_bridge via:  -p config_file:=.../gz_bridge.yaml
+
+# /clock - sim time source. Every node with use_sim_time:=true follows this.
+- ros_topic_name: "/clock"
+  gz_topic_name: "/clock"
+  ros_type_name: "rosgraph_msgs/msg/Clock"
+  gz_type_name: "gz.msgs.Clock"
+  direction: GZ_TO_ROS
+
+# /cmd_vel - velocity command INTO the DiffDrive plugin (teleop, Nav2 output).
+- ros_topic_name: "/cmd_vel"
+  gz_topic_name: "/cmd_vel"
+  ros_type_name: "geometry_msgs/msg/Twist"
+  gz_type_name: "gz.msgs.Twist"
+  direction: ROS_TO_GZ
+
+# /odom - wheel-encoder odometry OUT of the DiffDrive plugin.
+- ros_topic_name: "/odom"
+  gz_topic_name: "/odom"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+
+# /tf - the odom->base_link transform published by DiffDrive.
+#       (robot_state_publisher publishes the rest of the tree on the ROS side.)
+- ros_topic_name: "/tf"
+  gz_topic_name: "/tf"
+  ros_type_name: "tf2_msgs/msg/TFMessage"
+  gz_type_name: "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+
+# /scan - 2D lidar returns. This is the SLAM input on Day 3.
+- ros_topic_name: "/scan"
+  gz_topic_name: "/scan"
+  ros_type_name: "sensor_msgs/msg/LaserScan"
+  gz_type_name: "gz.msgs.LaserScan"
+  direction: GZ_TO_ROS
+
+# /joint_states - wheel angles from the gz JointStatePublisher system, so RSP can
+#                 compute base_link->wheel transforms.
+- ros_topic_name: "/joint_states"
+  gz_topic_name: "/joint_states"          # was /world/obstacles/model/my_bot/joint_state
+  ros_type_name: "sensor_msgs/msg/JointState"
+  gz_type_name: "gz.msgs.Model"
+  direction: GZ_TO_ROS
