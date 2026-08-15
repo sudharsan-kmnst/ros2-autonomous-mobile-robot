@@ -1,3 +1,9 @@
+
+
+https://github.com/user-attachments/assets/5a0b8aab-6aa9-4943-88c2-9c5c21fe6cc3
+
+
+
 # Autonomous Mobile Robot — SLAM + Nav2 (ROS 2 Jazzy · Gazebo Harmonic)
 
 A differential-drive mobile robot, modeled from scratch, that **builds a map of an unknown environment with SLAM and then navigates it autonomously** using the Nav2 stack — localizing with AMCL and following paths with an MPPI (sampling-based MPC) controller.
